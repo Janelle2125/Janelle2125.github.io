@@ -66,6 +66,26 @@
           height: 140px;
         }
       }
+      .content h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 576px) {
+  .content h1 {
+    font-size: 1.8rem;
+  }
+}
+
+.content h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem); /* adjusts between 1.5rem and 2.5rem */
+  font-weight: 600;
+  margin: 0;
+  word-break: break-word;
+}
+
+
     </style>
   </head>
 
