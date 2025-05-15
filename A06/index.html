@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery JS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
+  <script>
+    var mode = "Light";
+
+    function changeMode() {
+      var body = document.body;
+      var btnMode = document.getElementById("modeButton");
+      mode = mode == "Light" ? "dark" : "Light";
+
+      var btnText = mode == "dark" ? "Light Mode" : "Dark Mode";
+      var btnClass = mode == "dark" ? "btn-light" : "btn-dark";
+
+      btnMode.classList.remove("btn-light", "btn-dark");
+      btnMode.classList.add(btnClass);
+      btnMode.innerHTML = btnText;
+
+      body.setAttribute("data-bs-theme", mode);
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f1f1f1;
+    }
+
+    .gallery-header {
+      background-color: maroon;
+      color: white;
+      padding: 60px 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+      background-color: #fff;
+    }
+
+    .card-img-top {
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-text {
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .nav {
+      background-color: maroon;
+      text-align: center;
+    }
+
+    .nav-link.text-white {
+      transition: all 0.3s ease;
+    }
+
+    .nav-link.text-white:hover {
+      color: #ffc107;
+      text-shadow: 0 0 5px #ffc107;
+    }
+  </style>
+</head>
+
+<body data-bs-theme="Light">
+  <div id="header" class="container-fluid p-3 mb-3">
+    <div class="d-flex align-items-center justify-content-between">
+      <a class="btn-custom" href="../index.html">Home</a>
+      <h3 class="text-center flex-grow-1 m-0" style="font-style: italic;">BINI's Gallery</h3>
+      <button id="modeButton" class="ms-4 px-3 py-2 btn btn-dark" onclick="changeMode()">Dark Mode</button>
+    </div>
+  </div>
+
+  <div class="gallery-header d-flex justify-content-between align-items-center p-4">
+    <div class="text-start ms-3">
+      <a href="../index.html" class="nav-link text-white" style="font-size: 1.5rem; font-weight: 500;">Home</a>
+    </div>
+    <div class="flex-grow-1 text-center">
+      Gallery
+    </div>
+    <div class="me-3" style="width: 70px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="row g-4" id="galleryRow"></div>
+  </div>
+
+  <script>
+    var titles = ["Janelle", "Mikaela", "Family", "Favorite", "Dog", "Baby"];
+    var pictures = ["mee.jpg", "love.jpg", "fam.jpg", "fav.jpg", "haru.jpg", "elton.jpg"];
+    var contents = [
+      "This is me Graduated Senior High School in 2023.It's one of the proudest moments of my life. This success reflects all of my hard work, sacrifices, and goals throughout the years.",
+      "This is Mikaela my love of my life she's my constant and she's my everything.",
+      "This is my Family my strength to push through in life. the ones who lift me up during tough times.",
+      "This is my favorite picture with my love because this is the day that I met her parents.",
+      "This is our dog Haru holds a special place in our hearts like our own child.",
+      "This is my Brother's son, my favorite Nephew who gave me energy when life sucks."
+    ];
+
+    var rowElement = document.getElementById('galleryRow');
+
+    for (var i = 0; i < titles.length; i++) {
+      rowElement.innerHTML += '<div class="col-12 col-sm-6 col-md-4 col-lg-4"><div class="card"><img src="img/' + pictures[i] + '" class="card-img-top" alt=""><div class="card-body text-center"><h5 class="card-title">' + titles[i] + '</h5><p class="card-text">' + contents[i] + '</p></div></div></div>';
+    }
+
+    var cards = document.querySelectorAll('.card');
+
+    cards.forEach(function (card) {
+      var cardText = card.querySelector('.card-text');
+
+      card.addEventListener('mouseover', function () {
+        cardText.style.display = 'block';
+      });
+
+      card.addEventListener('mouseout', function () {
+        cardText.style.display = 'none';
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
