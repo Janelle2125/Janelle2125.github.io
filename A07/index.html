@@ -113,58 +113,71 @@
   <div class="container mt-4">
     <div class="row mb-3">
       <div class="col-md-6 mx-auto">
-        <input type="text" id="searchInput" class="form-control rounded-pill" placeholder="Search gun name (e.g., Vandal)">
+        <input type="text" id="searchInput" class="form-control rounded-pill"
+          placeholder="Search gun name (e.g., Vandal)">
       </div>
     </div>
     <div class="row" id="gunContainer"></div>
+
   </div>
 
   <script>
-    const gunContainer = document.getElementById("gunContainer");
-    const searchInput = document.getElementById("searchInput");
-    const bgVideo = document.getElementById("bg-video");
+    var gunContainer = document.getElementById("gunContainer");
+    var searchInput = document.getElementById("searchInput");
+    var bgVideo = document.getElementById("bg-video");
 
-    let allGuns = [];
+    var allGuns = [];
 
-    searchInput.addEventListener("input", async () => {
-      const value = searchInput.value.toLowerCase().trim();
+    searchInput.addEventListener("input", async function () {
+      var value = searchInput.value.toLowerCase().trim();
       gunContainer.innerHTML = "";
       if (!value) return;
 
-      const filtered = allGuns.filter(gun => gun.displayName.toLowerCase().includes(value));
+      var filtered = allGuns.filter(function (gun) {
+        return gun.displayName.toLowerCase().includes(value);
+      });
+
       if (filtered.length === 0) {
         gunContainer.innerHTML = "<p class='text-center text-muted'>No matching gun found.</p>";
         return;
       }
 
-      for (const gun of filtered) {
-        const skinsHtml = await fetchSkinsHtml(gun);
-        gunContainer.innerHTML += `
-          <div class="col-12">
-            <div class="weapon-card">
-              <div class="weapon-name mb-3">${gun.displayName}</div>
-              <div class="weapon-type mb-3">${gun.shopData?.categoryText || 'Unknown Type'}</div>
-              ${skinsHtml}
-            </div>
-          </div>
-        `;
+      for (var i = 0; i < filtered.length; i++) {
+        var gun = filtered[i];
+        var skinsHtml = await fetchSkinsHtml(gun);
+
+        gunContainer.innerHTML +=
+          '<div class="col-12">' +
+          '<div class="weapon-card">' +
+          '<div class="weapon-name mb-3">' + gun.displayName + '</div>' +
+          '<div class="weapon-type mb-3">' + (gun.shopData && gun.shopData.categoryText ? gun.shopData.categoryText : 'Unknown Type') + '</div>' +
+          skinsHtml +
+          '<a href="view.html?id=' + encodeURIComponent(gun.displayName) + '" class="btn btn-primary rounded-5 view-weapon">View Gun</a>' +
+          '</div>' +
+          '</div>';
       }
     });
 
     async function fetchGuns() {
-      const res = await fetch('https://valorant-api.com/v1/weapons');
-      const data = await res.json();
-      allGuns = data.data.filter(gun => !gun.displayName.toLowerCase().includes("melee"));
-      const firstVideo = findFirstSkinVideo(allGuns);
+      var res = await fetch('https://valorant-api.com/v1/weapons');
+      var data = await res.json();
+      allGuns = data.data.filter(function (gun) {
+        return !gun.displayName.toLowerCase().includes("melee");
+      });
+      var firstVideo = findFirstSkinVideo(allGuns);
       if (firstVideo) {
         bgVideo.src = firstVideo;
       }
     }
 
     function findFirstSkinVideo(guns) {
-      for (const gun of guns) {
-        for (const skin of gun.skins) {
-          const level = skin.levels.find(lvl => lvl.streamedVideo);
+      for (var i = 0; i < guns.length; i++) {
+        var gun = guns[i];
+        for (var j = 0; j < gun.skins.length; j++) {
+          var skin = gun.skins[j];
+          var level = skin.levels.find(function (lvl) {
+            return lvl.streamedVideo;
+          });
           if (level) return level.streamedVideo;
         }
       }
@@ -172,30 +185,30 @@
     }
 
     async function fetchSkinsHtml(gun) {
-      let skinsHtml = "";
-      const skins = gun.skins || [];
-      for (let i = 0; i < Math.min(3, skins.length); i++) {
-        const skin = skins[i];
-        const levels = skin.levels.filter(level => level.streamedVideo);
-        const videoLevel = levels[levels.length - 1];
+      var skinsHtml = "";
+      var skins = gun.skins || [];
+      for (var i = 0; i < Math.min(3, skins.length); i++) {
+        var skin = skins[i];
+        var levels = skin.levels.filter(function (level) {
+          return level.streamedVideo;
+        });
+        var videoLevel = levels[levels.length - 1];
         if (videoLevel) {
-          skinsHtml += `
-            <div class="skin-card">
-              <div class="mb-2"><strong>${skin.displayName}</strong></div>
-              <img src="${videoLevel.displayIcon || skin.displayIcon}" alt="${skin.displayName}">
-              <div class="video-container">
-                <video class="skin-video" src="${videoLevel.streamedVideo}" controls></video>
-              </div>
-            </div>
-          `;
+          skinsHtml +=
+            '<div class="skin-card">' +
+            '<div class="mb-2"><strong>' + skin.displayName + '</strong></div>' +
+            '<img src="' + (videoLevel.displayIcon || skin.displayIcon) + '" alt="' + skin.displayName + '">' +
+            '<div class="video-container">' +
+            '<video class="skin-video" src="' + videoLevel.streamedVideo + '" controls></video>' +
+            '</div>' +
+            '</div>';
         } else if (skin.displayIcon) {
-          skinsHtml += `
-            <div class="skin-card">
-              <div class="mb-2"><strong>${skin.displayName}</strong></div>
-              <img src="${skin.displayIcon}" alt="${skin.displayName}">
-              <div class="text-muted">No video available</div>
-            </div>
-          `;
+          skinsHtml +=
+            '<div class="skin-card">' +
+            '<div class="mb-2"><strong>' + skin.displayName + '</strong></div>' +
+            '<img src="' + skin.displayIcon + '" alt="' + skin.displayName + '">' +
+            '<div class="text-muted">No video available</div>' +
+            '</div>';
         }
       }
       return skinsHtml;
